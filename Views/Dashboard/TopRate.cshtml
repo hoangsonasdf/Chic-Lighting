@@ -1,0 +1,64 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+@model projectchicandlighting.ModelViews.Dashboard.DashboardModel
+<div class="wrapper">
+    <div class="content-wrapper" style="background: white;">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Dashboard</h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="chart">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+@{
+    var labels = Model.Labels;
+    var values = Model.DoubleValues;
+}
+<script>
+    // Get the canvas element
+    var canvas = document.getElementById('barChart');
+    var chartData = @Html.Raw(Json.Serialize(values));
+    var chartLabels = @Html.Raw(Json.Serialize(labels));
+
+    // Define your chart data
+    var chartData = {
+        labels: chartLabels,
+        datasets: [{
+            label: 'The average of rate (products)', // Label for the dataset
+            data: chartData,
+            backgroundColor: '#5CB646' // Bar color
+        }]
+    };
+
+    // Create the chart
+    var chart = new Chart(canvas, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            indexAxis: 'y', // Rotate the chart to make it horizontal
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+

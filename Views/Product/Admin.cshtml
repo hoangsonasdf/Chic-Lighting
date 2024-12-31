@@ -1,0 +1,128 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+@model projectchicandlighting.ModelViews.Product.ProductModel
+<div class="content-wrapper" style="background: white;">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">List Product</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Sale Price</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+
+                        <tr>
+                            <td>
+                                @product.Id
+                            </td>
+                            <td>
+                                <img src="@product.Image[0]" alt="" style="width: 5rem ;">
+                            </td>
+                            <td>
+                                @product.Name
+                            </td>
+                            <td>
+                                @product.Category
+                            </td>
+                            <td>
+                                @product.Price
+                            </td>
+                            <td>
+                                @product.SalePrice
+                            </td>
+                            <td>
+                                @product.Quantity
+                            </td>
+                            <td>
+                                @product.Status
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-dark rounded-0 mb-1" href="@Url.Action("Edit", "Product", new {id = product.Id})">EDIT</a>
+                                <br>
+                                <button type="button" class="btn btn-dark rounded-0" data-bs-toggle="modal" data-bs-target="@("#deleteModal" + product.Id)">Delete</button>
+                                <div class="modal fade" id="@("deleteModal" + product.Id)" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <form method="post" action="@Url.Action("Delete", "Product")">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="detailModalLabel">Confirm Delete</h5>
+                                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <span>Are you sure ?</span>
+                                                    <br>
+                                                    <span class="text-danger">Delete product : </span>
+                                                    @product.Name
+                                                    <input type="hidden" name="productId" value="@product.Id" class="d-none">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-dark rounded-0" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-dark rounded-0">Confirm</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Modal -->
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <!-- /.content -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="pagination justify-content-center mb-3">
+            @if (Model.CurrentPage > 1)
+            {
+                <a href="@Url.Action("Admin", "Product", new {search = Model.Search, page = Model.CurrentPage - 1 })" class="btn btn-default">Previous</a>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.CurrentPage)
+                {
+                    <span class="btn btn-dark">@i</span>
+                }
+                else
+                {
+                    <a href="@Url.Action("Admin", "Product", new {search = Model.Search, page = i })" class="btn btn-default">@i</a>
+                }
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a href="@Url.Action("Admin", "Product", new {search = Model.Search, page = Model.CurrentPage + 1 })" class="btn btn-default">Next</a>
+            }
+        </div>
+    }
+</div>

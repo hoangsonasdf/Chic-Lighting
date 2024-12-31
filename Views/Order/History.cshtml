@@ -1,0 +1,228 @@
+﻿@using projectchicandlighting.Common;
+@{
+    ViewData["Title"] = "Hisory Order";
+}
+@model projectchicandlighting.ModelViews.Order.HistoryModel
+<div id="historyorder">
+    <div class="d-flex flex-column align-items-center my-5">
+        <div class="section-title">
+            <h2>History Order</h2>
+        </div>
+        <div class="container">
+            <h3>
+                You have :
+                @Model.Count @Model.StatusName Order
+            </h3>
+        </div>
+        <div class="container row">
+            <div class="col-2">
+                <div class="stickyelm">
+                    @foreach (var status in Model.OrderStatuses)
+                    {
+                        <div class="row">
+                            <div class="col-2">
+                                <i class="@status.Bootstapicon"></i>
+                            </div>
+                            <div class="col">
+                                <a href="@Url.Action("History", "Order", new {statusID = status.Id})">@status.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col">
+                @foreach (var order in Model.Orders)
+                {
+                    <div class="card mt-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <p><b>OrderID: </b><i>@order.Id</i></p>
+                            </div>
+                            <div class="col-4">
+                                <p><b>Order Date: </b><i>@order.CreateAt</i></p>
+                            </div>
+                            <div class="col-2">
+                                <!-- Trigger the modal with a button -->
+                                <button type="button" class="btn btn-outline-dark rounded-0" data-bs-toggle="modal" data-bs-target="@("#detailModal" + order.Id)">Detail</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="@("detailModal" + order.Id)" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detailModalLabel">Order Details</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                @if (Model.StatusName == StaticOrderStatus.WaitForConfirmation)
+                                {
+                                    <div class="modal-body">
+                                        <div class="row text-center mb-1">
+                                            <div class="col-2 fw-bold">IMG</div>
+                                            <div class="col-4 fw-bold">PRODUCTNAME</div>
+                                            <div class="col-2 fw-bold">QUANTITY</div>
+                                            <div class="col-2 fw-bold">PRICE</div>
+                                            <div class="col-2">
+                                                <form action="@Url.Action("Cancel", "Order")" method="POST">
+                                                    <input type="hidden" name="orderId" value="@order.Id">
+                                                    <button type="submit" class="btn btn-outline-dark rounded-0">CANCEL</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        @foreach (var product in order.OrderDetails)
+                                        {
+                                            <div class="row text-center mb-1">
+                                                <div class="col-2">
+                                                    <img src="@product.Image" style="width: 50px;">
+                                                </div>
+                                                <div class="col-4">
+                                                    <p>@product.Name</p>
+                                                </div>
+                                                <div class="col-2">
+                                                    <p>@product.Quantity</p>
+                                                </div>
+                                                <div class="col-2">
+                                                    <p>@product.Price</p>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else if (Model.StatusName == StaticOrderStatus.Accomplished)
+                                {
+                                    <div class="modal-body">
+                                        <div class="row text-center mb-1">
+                                            <div class="col fw-bold">IMG</div>
+                                            <div class="col fw-bold">PRODUCTNAME</div>
+                                            <div class="col fw-bold">QUANTITY</div>
+                                            <div class="col fw-bold">PRICE</div>
+                                            <div class="col fw-bold">RATE</div>
+                                        </div>
+                                        @foreach (var product in order.OrderDetails)
+                                        {
+                                            <div class="row text-center mb-1">
+                                                <div class="col">
+                                                    <img src="@product.Image" style="width: 50px;">
+                                                </div>
+                                                <div class="col">
+                                                    <p>@product.Name</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p>@product.Quantity</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p>@product.Price</p>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-outline-dark rounded-0" data-bs-toggle="modal" data-bs-target="@("#rateModal" + product.ProductId)">REVIEW</button>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="modal-body">
+                                        <div class="row text-center mb-1">
+                                            <div class="col fw-bold">IMG</div>
+                                            <div class="col-4 fw-bold">PRODUCTNAME</div>
+                                            <div class="col fw-bold">QUANTITY</div>
+                                            <div class="col fw-bold">PRICE</div>
+                                        </div>
+                                        @foreach (var product in order.OrderDetails)
+                                        {
+                                            <div class="row text-center mb-1">
+                                                <div class="col">
+                                                    <img src="@product.Image" style="width: 50px;">
+                                                </div>
+                                                <div class="col-4">
+                                                    <p>@product.Name</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p>@product.Quantity</p>
+                                                </div>
+                                                <div class="col">
+                                                    <p>@product.Price</p>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @foreach (var product in order.OrderDetails)
+                    {
+                        <!-- Rate Modal -->
+                        <div class="modal fade" id="@("rateModal" + product.ProductId)" tabindex="-1" role="dialog" aria-labelledby="rateModalLabel-@product.ProductId" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="rateModalLabel-@product.ProductId">Review Product</h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <form method="post" action="@Url.Action("Add","Rate")">
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <img src="@product.Image" alt="Product Image" class="img-fluid" style="width: 100px;">
+                                                    </div>
+                                                    <div class="col">
+                                                        <div>@product.Name</div>
+                                                        <div>Price: @product.Price</div>
+                                                        <div>Quantity: @product.Quantity</div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        <label class="col-3" for="ratingInput">Rating:</label>
+                                                        <div class="star-rating col">
+                                                            @for (int i = 5; i >= 1; i--)
+                                                            {
+                                                                <input asp-for="Request.Star" type="radio" id="@($"star-{i}-{product.ProductId}")" name="Star" value="@i" />
+                                                                <label for="@($"star-{i}-{product.ProductId}")" class="star">&#9733;</label>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input asp-for="Request.ProductId" type="hidden" name="ProductId" value="@product.ProductId" />
+                                                <div class="form-group">
+                                                    <label for="commentInput">Comment:</label>
+                                                    <textarea asp-for="Request.Comment" class="form-control" name="Comment" rows="3" placeholder="Enter your comment"></textarea>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success">Send</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (TempData["AlertMessage"] != null)
+{
+    <script>
+        alert('@TempData["AlertMessage"]');
+    </script>
+}

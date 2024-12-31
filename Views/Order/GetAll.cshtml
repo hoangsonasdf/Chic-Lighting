@@ -1,0 +1,123 @@
+﻿@using projectchicandlighting.Common;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+@model projectchicandlighting.ModelViews.Order.OrderManagementModel
+<div class="content-wrapper bg-white">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">List Order</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @foreach (var status in Model.Statuses)
+                {
+                    <div class="p-3 col">
+                        <a class="btn btn-dark rounded-0 text-white" href="@Url.Action("GetAll", "Order", new { statusId = status.Id })">
+                            @status.Name
+                        </a>
+                    </div>
+                }
+            </div>
+            @foreach (var order in Model.Orders)
+            {
+                <form action="@Url.Action("Update", "Order")" method="POST">
+                    <input asp-for="Request.OrderId" type="hidden" name="OrderId" value="@order.Id" />
+                    <div class="card text-center mb-3">
+                        <div class="row g-3 p-3">
+                            <div class="col">
+                                <p class="fw-bold">OrderID</p>
+                                <p>@order.Id</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="fw-bold">Status</p>
+                                <select asp-for="Request.StatusId" class="form-select form-select-sm" name="StatusId" disabled="@(order.StatusName == StaticOrderStatus.Canceled)" >
+                                    @foreach (var status in Model.Statuses)
+                                    {
+                                        <option value="@status.Id" selected="@(Model.StatusId == status.Id)">
+                                            @status.Name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col">
+                                <p class="fw-bold">Customer</p>
+                                <p>@order.UserId</p>
+                            </div>
+                            <div class="col">
+                                <p class="fw-bold">Name</p>
+                                <p>@order.FirstName @order.LastName</p>
+                            </div>
+                            <div class="col">
+                                <p class="fw-bold">Address</p>
+                                <p>@order.Address</p>
+                            </div>
+                            <div class="col">
+                                <p class="fw-bold">Email</p>
+                                <p>@order.Email</p>
+                            </div>
+                            <div class="col">
+                                <br />
+                                <button type="button" class="btn btn-outline-dark rounded-0" data-bs-toggle="modal" data-bs-target="@("#detailModal" + @order.Id)">
+                                    Detail
+                                </button>
+                            </div>
+                            <div class="col">
+                                <br />
+                                <button type="submit" class="btn btn-dark rounded-0">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- Modal -->
+                <div class="modal fade" id="@("detailModal" + @order.Id)" tabindex="-1" aria-labelledby="@("detailModalLabel" + @order.Id)" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="@("detailModalLabel" + @order.Id)">Order Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row text-center mb-1 fw-bold">
+                                    <div class="col">IMG</div>
+                                    <div class="col">PRODUCTNAME</div>
+                                    <div class="col">QUANTITY</div>
+                                    <div class="col">PRICE</div>
+                                </div>
+                                @foreach (var product in order.Products)
+                                {
+                                    <div class="row text-center mb-1">
+                                        <div class="col">
+                                            <img src="@product.Image" class="img-fluid" style="max-width: 50px;" />
+                                        </div>
+                                        <div class="col">
+                                            <p>@product.Name</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>@product.Quantity</p>
+                                        </div>
+                                        <div class="col">
+                                            <p>@product.Price</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</div>

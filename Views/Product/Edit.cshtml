@@ -1,0 +1,124 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Edit Product";
+}
+@model projectchicandlighting.ModelViews.Product.AddEditProductModel
+
+<div class="content-wrapper" style="background: white;">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Edit Product</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <form action="@Url.Action("Edit", "Product")" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Request.ProductId" name="ProductId" value="@Model.Id" />
+                <div>
+                    <label asp-for="Request.ProductName">Product name:</label>
+                    <input asp-for="Request.ProductName" class="form-control" type="text" name="ProductName" value="@Model.Name" />
+                    <span asp-validation-for="Request.ProductName" class="text-danger"></span>
+                </div>
+                <div class="mb-3"></div>
+                <div>
+                    <label asp-for="Request.Quantity">Quantity:</label>
+                    <input asp-for="Request.Quantity" class="form-control" type="number" name="Quantity" min="1" value="@Model.Quantity" />
+                    <span asp-validation-for="Request.Quantity" class="text-danger"></span>
+                </div>
+                <div class="mb-3"></div>
+                <div>
+                    <label asp-for="Request.Price">Price:</label>
+                    <input asp-for="Request.Price" class="form-control" type="number" name="Price" min="0" value="@Model.Price" />
+                    <span asp-validation-for="Request.Price" class="text-danger"></span>
+                </div>
+                <div class="mb-3"></div>
+                <div>
+                    <label asp-for="Request.ProductStatusId">Status</label>
+                    <select asp-for="Request.ProductStatusId" class="form-control" name="ProductStatusId">
+                        @foreach (var status in Model.Statuses)
+                        {
+                            <option value="@status.Id" selected="@(Model.Status == status.Name)">@status.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3"></div>
+                <div>
+                    <label asp-for="Request.SalePrice">Sale Price:</label>
+                    <input asp-for="Request.SalePrice" class="form-control" type="number" name="SalePrice" min="0" value="@Model.SalePrice" />
+                    <span asp-validation-for="Request.SalePrice" class="text-danger"></span>
+                </div>
+                <div class="mb-3"></div>
+                <div>
+                    <label asp-for="Request.CategoryId">Category</label>
+                    <select asp-for="Request.CategoryId" class="form-control" name="CategoryId">
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.Id" selected="@(Model.Category == category.Name)">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3"></div>
+                <div class="mb-3">
+                    <label>Current Images:</label>
+                    <div id="currentImageContainer" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        @foreach (var imageUrl in Model.Images)
+                        {
+                            <img src="@imageUrl" style="width: 15rem;" alt="Product Image" />
+                        }
+                    </div>
+                </div>
+                <div>
+                    <label asp-for="Request.Images">New Images:</label>
+                    <input asp-for="Request.Images" class="form-control" type="file" multiple name="Images" id="imageInput" />
+                </div>
+                <div class="mb-3">
+                    <label>Preview:</label>
+                    <div id="imagePreviewContainer" style="display: flex; gap: 1rem; flex-wrap: wrap;"></div>
+                </div>
+                <div>
+                    <label asp-for="Request.Description">Product Description:</label>
+                    <textarea class="form-control" name="Description" cols="30" rows="10">@Model.Description</textarea>
+                    <span asp-validation-for="Request.Description" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-dark rounded-0 mt-3" name="apply">Apply</button>
+                </div>
+                @if (ViewBag.Success != null)
+                {
+                    <span class="text-success">@ViewBag.Success</span>
+                }
+                <div asp-validation-summary="All" class="text-danger"></div>
+            </form>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+        var files = event.target.files;
+        var previewContainer = document.getElementById('imagePreviewContainer');
+        var currentImageContainer = document.getElementById('currentImageContainer');
+
+        // Hide current images and clear previous previews
+        currentImageContainer.style.display = "none";
+        previewContainer.innerHTML = "";
+
+        Array.from(files).forEach(file => {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = "15rem";
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>

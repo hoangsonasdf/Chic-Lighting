@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Detail";
+}
+@model projectchicandlighting.ModelViews.Product.ProductIndexModel
+<!-- main content -->
+<div id="product-detail" class="container">
+    <div class="section-title">
+        <h2>Product Detail</h2>
+        <p>“Went for grocery, came back happy”</p>
+    </div>
+    <div class="d-flex flex-row justify-content-between">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+            <div class="carousel-inner">
+                @for (var i = 0; i < Model.Image.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <a href="@Model.Image[i]" class="gallery-lightbox" data-gall="gallery-item">
+                            <img src="@Model.Image[i]" class="d-block" width="522" height="522" alt="...">
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button class="btn" id="prevIndicator" style="height: 70.6px;padding: 0;"><i class="bi bi-arrow-left-short"></i></button>
+                <div class="carousel-indicators justify-content-between">
+                    @for (var i = 0; i < Model.Image.Count; i++)
+                    {
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i + 1)">
+                            <img src="@Model.Image[i]" class="d-block" alt="...">
+                        </button>
+                    }
+                </div>
+                <button class="btn" id="nextIndicator" style="height: 70.6px;padding: 0;"><i class="bi bi-arrow-right-short"></i></button>
+            </div>
+        </div>
+
+        <!-- information -->
+        <div class="productinfor justify-content-between">
+            <div class="mb-5">
+                <p>@Model.Name</p>
+                <p>$@Model.Price</p>
+                <p>
+                    On sale: : @if (Model.SalePrice != null)
+                    {
+                        <b style="color: red;">$ @Model.SalePrice </b>
+                    }
+                    else
+                    {
+                        <i style="color: #7F8487;">event comming soon...</i>
+                    }
+                </p>
+            </div>
+            <form method="POST" action="@Url.Action("Add", "Cart")">
+                <input asp-for="Request.ProductId" type="hidden" name="ProductId" value="@Model.Id">
+                <input asp-for="Request.Quantity" type="number" name="Quantity" value="1" min="1" max="@Model.Quantity">
+                <br>
+                <button type="submit" class="btn btn-outline-dark rounded-0 mt-4 w-75" name="addtocart">Add to cart</button>
+            </form>
+            <hr class="mt-5" />
+            <p>Detail: @Model.Description</p>
+            <hr class="mt-5" />
+            <div class="rate-information">
+                <div class="rating-container">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <h6 class="mb-0">OVERALL RATING</h6>
+                        </div>
+                        <div class="col-auto">
+                            <h2 class="mb-0" id="rating-value">@Model.AverageRate;</h2>
+                        </div>
+                        <div class="col-auto">
+                            <div class="stars">
+                                <div class="stars-empty">☆☆☆☆☆</div>
+                                <div class="stars-filled">★★★★★</div>
+                            </div>
+                            <small class="text-muted">@Model.TotalReview Reviews</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="rating-container">
+                    @foreach (var review in Model.Review)
+                    {
+                        <div class="rating-bar">
+                            <span class="star-label">@review.Value stars</span>
+                            <div class="bar">
+                                <div class="fill" style="width: @(review.Count / (double)Model.TotalReview * 100)%;"></div>
+                            </div>
+                            <span class="count">@review.Count</span>
+                        </div>
+                    }
+                </div>
+                @*                <div class="col">
+                <div class="row align-items-center">
+                <div>
+                <h6 class="mb-0">Overall Rating</h6>
+                </div>
+                <div class="col-auto">
+                <h2 class="mb-0">@Model.AverageRate</h2>
+                </div>
+                <div class="col-auto">
+                <div class="product-rating-stars" style="--product-rating: @Model.AverageRate;">
+                @for (int i = 1; i <= 5; i++)
+                {
+                <span class="product-star">☆</span>
+                }
+                </div>
+                <small class="text-muted">@Model.TotalReview Reviews</small>
+                </div>
+                </div>
+                </div>*@
+
+            </div>
+            <!-- end information -->
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('prevIndicator').addEventListener('click', function () {
+        const indicatorWrapper = document.getElementById('indicatorWrapper');
+        indicatorWrapper.scrollBy({ left: -100, behavior: 'smooth' });
+    });
+
+    document.getElementById('nextIndicator').addEventListener('click', function () {
+        const indicatorWrapper = document.getElementById('indicatorWrapper');
+        indicatorWrapper.scrollBy({ left: 100, behavior: 'smooth' });
+    });
+    function setRating(rating) {
+        const starFilled = document.querySelector('.stars-filled');
+        const ratingValue = document.getElementById('rating-value');
+        const percentage = (rating / 5) * 100;
+        starFilled.style.width = percentage + '%';
+        ratingValue.textContent = rating.toFixed(1);
+    }
+
+    // Example usage:
+    setRating(@Model.AverageRate); // You can change this value to test different ratings
+</script>

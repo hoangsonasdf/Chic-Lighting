@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Product Page";
+}
+@model projectchicandlighting.ModelViews.Product.ProductModel
+<div id="product">
+    <div class="lstype text-light d-flex flex-row">
+
+        <!-- Sidebar -->
+        <div class="lstproduct stickyelm mt-4">
+            <a href="#">Our Product</a>
+            <ul>
+                <a href="#">
+                <li data-type="viewall">View All</li>
+                </a>
+                <a href="#">
+                <li data-type="Ceiling">Ceiling Lights</li>
+                </a>
+                <a href="#">
+                <li data-type="Wall">Wall Lights</li>
+                </a>
+                <a href="#">
+                <li data-type="Lamp">Lamps</li>
+                </a>
+                <a href="#">
+                <li data-type="Outdoor">Outdoor Lights</li>
+                </a>
+                <a href="#">
+                <li data-type="Fan">Fans </li>
+                </a>
+                <a href="#">
+                <li data-type="Accents">Accents </li>
+                </a>
+            </ul>
+        </div>
+        <!-- end nav bar -->
+        <!-- product -->
+        <div class="mainproduct">
+            <div class="d-flex flex-row mt-4 mb-5 ">
+                <h6 class="font-weight-light" style="margin-left: 4%;">View All</h6>
+
+            </div>
+            <div class="d-flex flex-row mt-4 mb-5 stickyelm lstfilterbtn">
+                <button type="button" class="bi bi-filter col-1"> FILTER </button>
+                <button type="button" class="filterbt col" data-type="bestseller">BEST SELLER</button>
+                <button type="button" class="filterbt col" data-type="sale">SALE</button>
+                <button type="button" class="filterbt col" data-type="viewall"
+                        style="background-color: black; color: white ; margin-right: 18%;">
+                    VIEW ALL
+                </button>
+                <div>
+                    <form method="get" action="@Url.Action("Index", "Product")">
+                        <input type="text" class="border-0 border-bottom border-dark" placeholder="Search" aria-label="Search" aria-describedby="search-addon" name="search" value="@Model.Search" />
+                        <button class="bi bi-search border-0 border-bottom border-dark search-product-btn" id="search-addon" type="submit">
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- shopping card -->
+            <div class="shopcard gallery">
+                @foreach (var product in Model.Products)
+                {
+                    <form class="card @product.Category @product.Status viewall" action="@Url.Action("Add", "Cart")" method="POST">
+                        <div id="@product.Id">
+                            <div class="card-img gallery-item @product.Status">
+                                <a href="@Url.Action("Detail", "Product", new {id = product.Id})"><img src="@product.Image[0]" class="card-img-top" alt="..."></a>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex flex-row justify-content-between">
+                                    <a href="@Url.Action("Detail", "Product", new {id = product.Id})" style="width: 86%;">
+                                        <p class="card-title">@product.Name</p>
+                                    </a>
+                                    <input asp-for="@product.Request.ProductId" type="hidden" name="ProductId" value="@product.Id">
+                                    <input asp-for="@product.Request.Quantity" type="hidden" name="Quantity" value="1">
+                                    @if (product.Status != "outofstock")
+                                    {
+                                        <button type="submit" name="addtocart" class="bi bi-cart" title="Add to cart"></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="bi bi-cart" title="Add to cart"></button>
+                                    }
+                                </div>
+                                <p class="card-price">
+                                    $ @product.Price
+                                    <span class="card-sale-price @product.Status">Sale off to: $ @product.SalePrice</span>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                }
+            </div>
+            <!--end shopping card -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="pagination justify-content-center">
+                    @if (Model.CurrentPage > 1)
+                    {
+                        <a href="@Url.Action("Index", "Product", new {search = Model.Search, page = Model.CurrentPage - 1 })" class="btn btn-default">Previous</a>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == Model.CurrentPage)
+                        {
+                            <span class="btn btn-dark">@i</span>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", "Product", new {search = Model.Search, page = i })" class="btn btn-default">@i</a>
+                        }
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                        <a href="@Url.Action("Index", "Product", new {search = Model.Search, page = Model.CurrentPage + 1 })" class="btn btn-default">Next</a>
+                    }
+                </div>
+            }
+        </div>
+        <!-- end product -->
+    </div>
+</div>

@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+@model List<projectchicandlighting.ModelViews.Feedback.AdminFeedbackModel>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">List Feedback</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            @foreach (var feedback in Model)
+            {
+                <div class="card text-center mb-3">
+                    <div class="row g-0">
+                        <div class="col-2">
+                            <p>Email</p>
+                            <p>@feedback.Email</p>
+                        </div>
+                        <div class="col">
+                            <p>Name</p>
+                            <p>@feedback.Name</p>
+                        </div>
+                        <div class="col">
+                            <p>Rate</p>
+                            <p>@feedback.Rate</p>
+                        </div>
+                        <div class="col">
+                            <br>
+                            <button type="button" class="btn btn-dark rounded-0" data-bs-toggle="modal" data-bs-target="@("#detailModal" + feedback.Id)">
+                                Detail
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="@("detailModal" + feedback.Id)" tabindex="-1" aria-labelledby="@("detailModalLabel" + feedback.Id)" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="@("detailModalLabel" + feedback.Id)">Order Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" readonly>@feedback.Comment</textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+    <!-- /.content -->
+</div>

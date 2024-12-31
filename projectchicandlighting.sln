@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "projectchicandlighting", "projectchicandlighting.csproj", "{73B85CC3-336A-45F4-8CD0-BDDD7F32DA11}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73B85CC3-336A-45F4-8CD0-BDDD7F32DA11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B85CC3-336A-45F4-8CD0-BDDD7F32DA11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B85CC3-336A-45F4-8CD0-BDDD7F32DA11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B85CC3-336A-45F4-8CD0-BDDD7F32DA11}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61F56380-34F2-487B-BAC0-432D3D3ECFD2}
+	EndGlobalSection
+EndGlobal

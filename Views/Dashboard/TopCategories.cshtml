@@ -1,0 +1,103 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+@model projectchicandlighting.ModelViews.Dashboard.DashboardModel
+<div class="wrapper">
+    <div class="content-wrapper" style="background: white;">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Dashboard</h1>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <form action="@Url.Action("Index", "Dashboard")" method="GET">
+                        <div class="row">
+                            <div class="p-3 col">
+                                <label for="Month" class="form-label">Month:</label>
+                                <select class="form-select-lg w-50" aria-label=".form-select-lg example" name="month">
+                                    @foreach (var month in Model.Months)
+                                    {
+                                        if (month.Value == Model.SelectedMonth.ToString())
+                                        {
+                                            <option value="@month.Value" selected>@month.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@month.Value">@month.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="p-3 col">
+                                <label for="Year" class="form-label">Year:</label>
+                                <select class="form-select-lg w-50" aria-label=".form-select-lg example" name="year">
+                                    @foreach (var year in Model.Years)
+                                    {
+                                        if (year.Value == Model.SelectedYear.ToString())
+                                        {
+                                            <option value="@year.Value" selected>@year.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@year.Value">@year.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="p-3 col-2">
+                                <button type="submit" class="btn btn-outline-dark rounded-0">View</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="chart">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+@{
+    var labels = Model.Labels;
+    var values = Model.Values;
+}
+<script>
+    // Get the canvas element
+    var canvas = document.getElementById('barChart');
+    var chartData = @Html.Raw(Json.Serialize(values));
+    var chartLabels = @Html.Raw(Json.Serialize(labels));
+
+    // Define your chart data
+    var chartData = {
+        labels: chartLabels,
+        datasets: [{
+            label: 'The amount of sold (categories)', // Label for the dataset
+            data: chartData,
+            backgroundColor: '#5CB646' // Bar color
+        }]
+    };
+
+    // Create the chart
+    var chart = new Chart(canvas, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            indexAxis: 'y', // Rotate the chart to make it horizontal
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
