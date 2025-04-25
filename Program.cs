@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using projectchicandlighting;
 using projectchicandlighting.Middleware;
 using projectchicandlighting.Models;
 using projectchicandlighting.Repositories.AuthRepositories;
@@ -94,7 +95,7 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/User") ||
   context.Request.Path.StartsWithSegments("/Product/Add") ||
   context.Request.Path.StartsWithSegments("/Dashboard"), builder =>
   {
-      builder.UseMiddleware<JwtCookieMiddleware>();
+      builder.UseCheckAuthentication();
   });
 
 app.UseWhen(context => context.Request.Path.StartsWithSegments("/Dashboard") ||
@@ -102,7 +103,7 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/Dashboard") ||
     context.Request.Path.StartsWithSegments("/Product/Add")
     , builder =>
     {
-        builder.UseMiddleware<JwtCheckRoleMiddleware>();
+        builder.UseCheckAuthorization();
     });
 
 
